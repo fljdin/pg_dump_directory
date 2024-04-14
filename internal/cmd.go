@@ -45,7 +45,7 @@ func flags() {
 func Tree() {
 	flags()
 
-	if err := read(filePath); err != nil {
+	if err := read(filePath, outputDir); err != nil {
 		log.Fatal(err.Error())
 	}
 }

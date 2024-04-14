@@ -6,23 +6,27 @@ var (
 	// (_). Subsequent characters in an identifier or key word can be letters,
 	// underscores, digits (0-9), or dollar signs ($).
 	// https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS
-	identifierExpr = `[a-zA-Z_\p{L}][a-zA-Z0-9_\p{L}]`
-	schemaExpr     = `"?(?P<schema>` + identifierExpr + `+)"?`
-	nameExpr       = `"?(?P<name>` + identifierExpr + `+)"?`
+	identifierExpr = `[a-zA-Z_\p{L}][a-zA-Z0-9_\p{L}]+`
+	schemaExpr     = `"?(?P<schema>` + identifierExpr + `)"?`
+	nameExpr       = `"?(?P<name>` + identifierExpr + `)"?`
 
 	expressions = []string{
-		`(?:CREATE|ALTER) (?P<type>AGGREGATE) ` + schemaExpr + `\.` + nameExpr,
-		`(?:CREATE|ALTER) (?P<type>DOMAIN) ` + schemaExpr + `\.` + nameExpr,
-		`(?:CREATE|ALTER) (?P<type>FUNCTION) ` + schemaExpr + `\.` + nameExpr,
-		`(?:CREATE|ALTER) (?P<type>INDEX) ` + nameExpr + ` ON ` + schemaExpr + `\.`,
-		`(?:CREATE|ALTER) (?P<type>MATERIALIZED) VIEW ` + schemaExpr + `\.` + nameExpr,
-		`(?:CREATE|ALTER) (?P<type>SCHEMA) ` + nameExpr,
-		`(?:CREATE|ALTER) (?P<type>SEQUENCE) ` + schemaExpr + `\.` + nameExpr,
-		`(?:CREATE|ALTER) (?P<type>TABLE) ` + schemaExpr + `\.` + nameExpr,
-		`(?:CREATE|ALTER) (?P<type>TYPE) ` + schemaExpr + `\.` + nameExpr,
-		`(?:CREATE|ALTER) (?P<type>VIEW) ` + schemaExpr + `\.` + nameExpr,
+		`(?P<type>(?:GRANT|REVOKE)) .* ON ` + schemaExpr + `\.` + nameExpr,
+		`(?P<type>(?:GRANT|REVOKE)) .* ON SCHEMA` + schemaExpr,
+		`ALTER .* ` + schemaExpr + `\.` + nameExpr + `.* (?P<type>OWNER) TO`,
 		`ALTER (?P<type>TABLE) ONLY ` + schemaExpr + `\.` + nameExpr,
+		`ALTER SCHEMA ` + schemaExpr + ` (?P<type>OWNER) TO`,
+		`CREATE (?P<type>AGGREGATE) ` + schemaExpr + `\.` + nameExpr,
+		`CREATE (?P<type>DOMAIN) ` + schemaExpr + `\.` + nameExpr,
+		`CREATE (?P<type>FUNCTION) ` + schemaExpr + `\.` + nameExpr,
+		`CREATE (?P<type>INDEX) ` + nameExpr + ` ON ` + schemaExpr + `\.`,
+		`CREATE (?P<type>MATERIALIZED) VIEW ` + schemaExpr + `\.` + nameExpr,
+		`CREATE (?P<type>SCHEMA) ` + nameExpr,
+		`CREATE (?P<type>SEQUENCE) ` + schemaExpr + `\.` + nameExpr,
+		`CREATE (?P<type>TABLE) ` + schemaExpr + `\.` + nameExpr,
 		`CREATE (?P<type>TRIGGER) ` + nameExpr + ` .* ON ` + schemaExpr + `\.`,
+		`CREATE (?P<type>TYPE) ` + schemaExpr + `\.` + nameExpr,
+		`CREATE (?P<type>VIEW) ` + schemaExpr + `\.` + nameExpr,
 		`CREATE UNIQUE (?P<type>INDEX) ` + nameExpr + ` ON ` + schemaExpr + `\.`,
 	}
 )
